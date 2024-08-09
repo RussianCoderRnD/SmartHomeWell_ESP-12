@@ -5,6 +5,10 @@
 #include <ESP8266WiFi.h>       // Подключаем библиотеку для работы с WiFi на ESP8266
 #include <ESP8266WebServer.h>  // Подключаем библиотеку для создания веб-сервера на ESP8266
 
+#include "MyDisplayString.h" // Добавьте заголовочный файл MyDisplay
+
+extern MyDisplayString MyDisS; // Объявите глобальную переменную MyDis
+
 // Объявление внешних переменных и объектов, используемых в функции
 extern const char *ssid;         // Имя сети (SSID), к которой будет подключаться точка доступа (AP)
 extern const char *password;     // Пароль сети (SSID) для точки доступа

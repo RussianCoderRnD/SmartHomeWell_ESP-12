@@ -8,7 +8,7 @@
 PressureSensor pressureSensor(PRESSURE_SENSOR_PIN, 1.2); /* Создание объекта датчика давления */
 
 PressureController pressureController(Pin_PUMP); /* Создание объекта с номером ПИНа реле */
-
+GyverOLED<SSD1306_128x64, OLED_BUFFER> oled;
 // Датчики на D2
 MicroDS18B20<Pin_DS18B20> DS18B20_sensor;
 
@@ -19,6 +19,9 @@ IPAddress subnet(255, 255, 255, 0);  /* Маска подсети */
 ESP8266WebServer server(80); /* Создание экземпляра веб-сервера на порту 80 */
 
 EEPROMHandler eepromHandler;
+
+// Создание экземпляра класса MyDisplay
+MyDisplayString MyDisS(oled);
 //------------- СОЗДАНИЕ ЭКЗЕМПЛЯРА END -----------------
 
 //----------------- CONSTANTS START ---------------------
@@ -44,14 +47,19 @@ void checkEEPROM(); /* Функция для проверки и записи д
 void setup(void)
 {
   Serial.begin(MONITOR_SPEED); /* Открываем порт для связи с ПК */
-
-  eepromHandler.begin(32); /* Инициализация EEPROM с размером 512 байт */
+  oled.init();                 // инициализация
+  oled.clear();                // очистить дисплей (или буфер)
+  oled.update();               // обновить. Только для режима с буфером! OLED_BUFFER
+  eepromHandler.begin(32);     /* Инициализация EEPROM с размером 512 байт */
 
   hysteresis = eepromHandler.readFloat(6); /* Чтение значения из EEPROM */
   count = eepromHandler.readFloat(0);      /* Чтение значения из EEPROM */
 
   WiFiAP(); /* Инициализация точки доступа (AP) */
   MyOTA();  /* Настройка OTA */
+
+  oled.clear();  // очистить дисплей (или буфер)
+  oled.update(); // обновить. Только для режима с буфером! OLED_BUFFER
 }
 //--------------------- SETUP END ----------------------
 
@@ -82,7 +90,7 @@ void loop(void)
     pressureController.update(pressure, onoff);
 
     Serial.print("DS18B20_sensor ");
-    Serial.print(DS18B20_temperature);    
+    Serial.print(DS18B20_temperature);
     Serial.print("  pressure ");
     Serial.print(pressure);
     Serial.print("  count ");
@@ -91,6 +99,12 @@ void loop(void)
     Serial.print(hysteresis);
     Serial.print(" bar, Relay State: ");
     Serial.println(digitalRead(pressureController.getRelayPin()) ? "ON" : "OFF");
+    MyDisS.myDisplayString(0, 0, 0, "DS18B20: "+(String)DS18B20_temperature);
+    MyDisS.myDisplayString(0, 10, 0, "Pressure: "+(String)pressure);
+    MyDisS.myDisplayString(0, 24, 0, "Count: "+(String)count);
+    MyDisS.myDisplayString(0, 35, 0, "Hysteresis: "+(String)hysteresis);
+    MyDisS.myDisplayString(0, 48, 0, "Relay State: ");
+    MyDisS.myDisplayString(80, 48, 0, (String)digitalRead(pressureController.getRelayPin()) ? "ON" : "OFF");
   }
   ArduinoOTA.handle();
   server.handleClient(); /* Обработка клиентских запросов */
@@ -129,13 +143,13 @@ void handleRes()
   /* Создаем JSON объект */
   StaticJsonDocument<200> jsonDoc;
   /* Добавляем переменные в JSON объект */
-  jsonDoc["PR"] = 4.1;//pressure;
-  jsonDoc["COUNT"] = 2.2; //count;
-  jsonDoc["ONOFF"] = true; //onoff;
-  jsonDoc["HYSTERESIS"] = 0.3; //hysteresis;
-  jsonDoc["RelayOnOff"] = true; //RelayOnOff;
-  jsonDoc["DS18B20_sensor_status"] = true ;//DS18B20_sensor_status;
-  jsonDoc["DS18B20_temperature"] = 24.6; //DS18B20_temperature;
+  jsonDoc["PR"] = 4.1;                     // pressure;
+  jsonDoc["COUNT"] = 2.2;                  // count;
+  jsonDoc["ONOFF"] = true;                 // onoff;
+  jsonDoc["HYSTERESIS"] = 0.3;             // hysteresis;
+  jsonDoc["RelayOnOff"] = true;            // RelayOnOff;
+  jsonDoc["DS18B20_sensor_status"] = true; // DS18B20_sensor_status;
+  jsonDoc["DS18B20_temperature"] = 24.6;   // DS18B20_temperature;
 
   /* Преобразуем JSON объект в строку */
   String jsonString;

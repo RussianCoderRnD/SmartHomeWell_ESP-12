@@ -16,6 +16,8 @@
 #include <MyOTA.h>            // Обновление ПО через воздух (OTA)
 #include <WiFiAP.h>           // Настройка точки доступа (AP) WiFi
 #include <microDS18B20.h>     // Библиотека для работы с датчиком температуры DS18B20
+#include <MyDisplay.h>
+#include <MyDisplayString.h>
 
 
 #endif 
