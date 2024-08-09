@@ -37,20 +37,16 @@ MyDisplayString MyDisS(oled);
 void setup()
 {
   Serial.begin(MONITOR_SPEED); /* Открываем порт для связи с ПК */
+  oled.init();                 // инициализация
+  oled.clear();                // очистить дисплей (или буфер)
+  oled.update();               // обновить. Только для режима с буфером! OLED_BUFFER
+  eepromHandler.begin(32);     /* Инициализация EEPROM с размером 512 байт */
 
-  oled.init();   // инициализация
-  oled.clear();  // очистить дисплей (или буфер)
-  oled.update(); // обновить. Только для режима с буфером! OLED_BUFFER
+  hysteresis = eepromHandler.readFloat(6); /* Чтение значения из EEPROM */
+  count = eepromHandler.readFloat(0);      /* Чтение значения из EEPROM */
 
   WiFiAP(); /* Инициализация точки доступа (AP) */
-
-  delay(5000);
-
-  hysteresis = eepromHandler.readFloat(6);        /* Чтение значения из EEPROM */
-  eepromHandler.begin(32);                        /* Инициализация EEPROM с размером 512 байт */
-
-  MyOTA(); // Настройка OTA
-
+  MyOTA();  /* Настройка OTA */
 
   oled.clear();  // очистить дисплей (или буфер)
   oled.update(); // обновить. Только для режима с буфером! OLED_BUFFER

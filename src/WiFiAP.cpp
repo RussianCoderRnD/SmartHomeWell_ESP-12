@@ -37,6 +37,7 @@ void WiFiAP()
     server.on("/hysteresis", HTTP_GET, handleHysteresis); /* Регистрация обработчика для URI /hysteresis */
     server.on("/res", HTTP_GET, handleRes);
     server.begin(); /* Запуск веб-сервера */
+    delay(3000);
   }
   else
   {
