@@ -129,13 +129,13 @@ void handleRes()
   /* Создаем JSON объект */
   StaticJsonDocument<200> jsonDoc;
   /* Добавляем переменные в JSON объект */
-  jsonDoc["PR"] = pressure;
-  jsonDoc["COUNT"] = count;
-  jsonDoc["ONOFF"] = onoff;
-  jsonDoc["HYSTERESIS"] = hysteresis;
-  jsonDoc["RelayOnOff"] = RelayOnOff;
-  jsonDoc["DS18B20_sensor_status"] = DS18B20_sensor_status;
-  jsonDoc["DS18B20_temperature"] = DS18B20_temperature;
+  jsonDoc["PR"] = 4.1;//pressure;
+  jsonDoc["COUNT"] = 2.2; //count;
+  jsonDoc["ONOFF"] = true; //onoff;
+  jsonDoc["HYSTERESIS"] = 0.3; //hysteresis;
+  jsonDoc["RelayOnOff"] = true; //RelayOnOff;
+  jsonDoc["DS18B20_sensor_status"] = true ;//DS18B20_sensor_status;
+  jsonDoc["DS18B20_temperature"] = 24.6; //DS18B20_temperature;
 
   /* Преобразуем JSON объект в строку */
   String jsonString;
